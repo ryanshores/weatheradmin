@@ -5,7 +5,6 @@ var stormSchema = new mongoose.Schema({
     name: String,
     category: Number,
     isActive: Boolean,
-    isArchive: Boolean,
     
     cards: [
         {
