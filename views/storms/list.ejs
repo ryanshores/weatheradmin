@@ -9,7 +9,9 @@
 <section>
     <h1>Storms</h1>
     <% storms.forEach(function(storm){ %>
-        <p><%=storm.name%> <%= storm.category%></p><a href="/storms/<%=storm._id%>">Details</a>
+        <div class="stormContainer">
+            <p><%=storm.name%> <%= storm.category%></p><a href="/storms/<%=storm._id%>">Details</a>
+        </div>
     <% });; %>
 </section>
 <% include ../partials/footer %>

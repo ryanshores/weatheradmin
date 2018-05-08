@@ -54,7 +54,8 @@ form input {
     margin: 15px;
 }
 
-form button {
+.btn {
+	font-size: 11px;
     display: inline-block;
     font-weight: 400;
     text-align: center;
@@ -71,8 +72,28 @@ form button {
     transition: color 0.15s ease-in-out;
 }
 
-form button:hover {
+.btn:hover {
     background-color: #28a745;
+    color: white;
+}
+
+/*Storm List Style*/
+.stormContainer {
+	margin-bottom: 20px;
+}
+
+.updateBtn {
+	padding: 3px 5px;
+}
+
+.deleteBtn {
+	color: red;
+	padding: 3px 5px;
+	border-color: red;
+}
+
+.deleteBtn:hover {
+    background-color: red;
     color: white;
 }
 
