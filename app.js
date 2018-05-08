@@ -1,3 +1,5 @@
+require('dotenv').config({path: './vars.env'});
+
 var express         = require('express'),
     app             = express(),
     mongoose        = require("mongoose"),
@@ -16,7 +18,7 @@ var schedule = require("./routes/schedule");
 
 app.set("view engine", "ejs"); 
 app.use(methodOverride("_method"));
-mongoose.connect("mongodb://weather:weather@ds213338.mlab.com:13338/matdan-dev");
+mongoose.connect(process.env.MLAB_DB);
 mongoose.Promise = global.Promise;
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(__dirname + "/public"));

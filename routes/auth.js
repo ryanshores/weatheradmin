@@ -11,7 +11,7 @@ router.get('/register', function(req, res){
 
 router.post('/register', function(req, res){
     
-    if( req.body.secret == "1234") {
+    if( req.body.secret == process.env.SECRETPASS) {
         var newAdmin = new Admin({username: req.body.username});
         Admin.register(newAdmin, req.body.password, function( err, admin ){
            if( err ) {
