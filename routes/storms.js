@@ -2,7 +2,7 @@ var express             = require("express"),
     router              = express.Router();
     
 var Storms = require("../models/storms");
-var Cards = require("../models/cards")
+var Cards = require("../models/cards");
 
 // STORMS
 // get
