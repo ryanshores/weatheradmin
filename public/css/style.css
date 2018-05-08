@@ -11,6 +11,10 @@ html {
 	color: #555;
 }
 
+h1 {
+	margin-bottom: 20px;
+}
+
 ul {
 	list-style: none;
 }
@@ -50,7 +54,8 @@ form input {
     margin: 15px;
 }
 
-form button {
+.btn {
+	font-size: 11px;
     display: inline-block;
     font-weight: 400;
     text-align: center;
@@ -67,9 +72,48 @@ form button {
     transition: color 0.15s ease-in-out;
 }
 
-form button:hover {
+.btn:hover {
     background-color: #28a745;
     color: white;
+}
+
+/*Storm List Style*/
+.stormContainer {
+	margin-bottom: 20px;
+}
+
+.updateBtn {
+	padding: 3px 5px;
+}
+
+.deleteBtn {
+	color: red;
+	padding: 3px 5px;
+	border-color: red;
+}
+
+.deleteBtn:hover {
+    background-color: red;
+    color: white;
+}
+
+/*Table Style*/
+table {
+	width: 80%;
+	text-align: left;
+}
+
+tr:nth-child(odd){
+	background-color: #f1f1f1;
+}
+
+th {
+	background: #d0d0d0;
+	padding: 5px;
+}
+
+td {
+	padding: 5px;
 }
 
 
@@ -103,6 +147,10 @@ header nav {
 
 header nav li {
 	margin: 0 15px;
+}
+
+header nav ul {
+	display: flex;
 }
 
 

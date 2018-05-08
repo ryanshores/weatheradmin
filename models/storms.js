@@ -3,7 +3,15 @@ var mongoose = require('mongoose');
 var stormSchema = new mongoose.Schema({
     
     name: String,
-    isActive: Boolean
+    category: Number,
+    isActive: Boolean,
+    
+    cards: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Card"
+        }
+    ]
     
 });
 

@@ -1,0 +1,59 @@
+<% include ../partials/header %>
+<header>
+    <nav>
+        <ul>
+            <li><a href="/storms/<%=storm._id%>/add/card">Add Card</a></li>
+            <li><a href="#">Add KML File</a></li>
+        </ul>
+    </nav>    
+</header>
+<section>
+    <h1><%= storm.name %> <%= storm.category %> <a href="/storms/edit/<%=storm._id%>">Edit</a> <a href="/storms/<%=storm._id%>/delete">Delete</a></h1>
+    <form action='/storms/<%=storm._id%>/active' method='POST'>
+        <label>Active storm: </label>
+        <select name="isActive">
+            <% if(storm.isActive){ %>
+            <option value="true" selected>True</option>
+            <option value="false">False</option>
+            <% } else { %>
+            <option value="true">True</option>
+            <option value="false" selected>False</option>
+            <% } %>
+        </select>
+        <button class="btn updateBtn" value="submit">Submit</button>
+    </form>
+    <table>
+    	<tr>
+    	    <th>Edit</th>
+    		<th>Title</th>
+    		<th>URL</th>
+    		<th>Description</th>
+    		<th>Active</th>
+    		<th>Delete</th>
+    	</tr>
+    	<% storm.cards.forEach( function( card ){ %>
+    		<tr>
+    		    <td><a class="btn updateBtn" href="/storms/<%=storm._id%>/<%=card._id%>/edit">Edit</a></td>
+    			<td><%= card.title %></td>
+    			<td><%= card.url %></td>
+    			<td><%= card.desc %></td>
+    			<td>
+    			    <form action='/storms/<%=storm._id%>/<%=card._id%>/active' method='POST'>
+        			    <select name="isActive">
+                            <% if(card.isActive){ %>
+                            <option value="true" selected>True</option>
+                            <option value="false">False</option>
+                            <% } else { %>
+                            <option value="true">True</option>
+                            <option value="false" selected>False</option>
+                            <% } %>
+                        </select>
+                        <button class="btn updateBtn" value="submit">Submit</button>
+    			    </form>
+    			</td>
+    			<td><a class="btn deleteBtn" href="/storms/<%=storm._id%>/<%=card._id%>/delete">Delete</a></td>
+    		</tr>
+    	<% }); %>
+    </table>
+</section>
+<% include ../partials/footer %>
