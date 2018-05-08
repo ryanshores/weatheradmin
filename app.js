@@ -1,20 +1,19 @@
 require('dotenv').config({path: './vars.env'});
 
-var express         = require('express'),
+const express         = require('express'),
     app             = express(),
     mongoose        = require("mongoose"),
     bodyParser      = require("body-parser"),
-    schedule        = require('node-schedule'),
     methodOverride  = require("method-override");
     
-var passport = require('passport')
+const passport = require('passport')
   , LocalStrategy = require('passport-local').Strategy;
     
-var Storms = require("./models/storms");
+const Storms = require("./models/storms");
 
-var authRoutes = require("./routes/auth");
-var stormRoutes = require("./routes/storms");
-var schedule = require("./routes/schedule");
+const authRoutes = require("./routes/auth");
+const stormRoutes = require("./routes/storms");
+const fileRoutes = require("./routes/files");
 
 app.set("view engine", "ejs"); 
 app.use(methodOverride("_method"));
@@ -53,7 +52,8 @@ app.get('/', function(req, res){
 });
 
 app.use(authRoutes);
-app.use('/storms', stormRoutes);
+app.use("/storms", stormRoutes);
+app.use("/files", fileRoutes);
 
 app.listen(process.env.PORT, process.env.IP, function(){
    console.log("Serving weather");
