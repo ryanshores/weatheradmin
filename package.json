@@ -1,6 +1,6 @@
 {
   "name": "weather",
-  "version": "0.0.1",
+  "version": "0.1",
   "description": "Admin access to weather data for stormtracker",
   "main": "app.js",
   "scripts": {
