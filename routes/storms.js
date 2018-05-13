@@ -1,13 +1,13 @@
-var express             = require("express"),
-    router              = express.Router();
+var express = require("express"),
+    router  = express.Router(),
+    async   = require("async");
     
 var Storms = require("../models/storms");
 var Cards = require("../models/cards");
 
-var files = require("./files");
+var saveFile = require("./files");
 const fileUpload = require("express-fileupload");
 router.use(fileUpload());
-console.log(files);
 
 // STORMS
 // get
@@ -17,7 +17,6 @@ router.get('/', function(req, res){
             console.log(err.message);
             res.redirect("/");
         } else {
-            console.log(foundStorms);
             res.render("./storms/list", { storms: foundStorms });
         }
     });
@@ -174,16 +173,44 @@ router.post("/:stormid/upload", function(req, res){
 	let sampleFile = req.files.sampleFile;
 	let path = "./uploads/" + sampleFile.name;
 	
-	files(sampleFile, sampleFile.name, path, ".kml", function(err, result){
-		if(err){
-			console.log("Error: " + err);
-		}
-		else{
-			console.log("Success: ");
-			console.log(result);
-		}
-	});
-	
+	async.waterfall([
+	   // Convert KML to JSON String
+	    function(callback){
+	        saveFile(sampleFile, sampleFile.name, path, ".kml", function(err, result) {
+	            if(err){
+	               // The file was wrong, or failed to be converted
+	               callback(err);
+	            } else {
+	               // Successful file upload and convert
+	               callback(null, result);
+	            }
+	        });
+	    }, function(GeoJSON, callback){
+	       // Save JSON to database
+	       Storms.findById(req.params.stormid, function(err, storm) {
+	           if(err){
+	               //handle err
+	               callback(err);
+	           } else {
+	               //add json and save
+	               storm.json = GeoJSON;
+	               storm.save(function(err){
+	                   if(err){
+	                       callback(err);
+	                   }
+	               });
+	               callback(null, "Saved to Database");
+	           }
+	       });
+	    }
+	    ], function(err, result){
+	        if(err){
+	            res.send(err);
+	        } else {
+	            res.redirect("/storms/" + req.params.stormid);
+	        }
+	    }
+	);
 });
 
 
