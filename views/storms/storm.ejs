@@ -56,4 +56,14 @@
     	<% }); %>
     </table>
 </section>
+<section>
+    <h1>Upload a file</h1>
+    <form id='uploadForm' 
+    	action='/storms/<%=storm._id%>/upload' 
+    	method='post' 
+    	encType="multipart/form-data">
+        	<input type="file" name="sampleFile" />
+        	<input type='submit' value='Upload!' />
+    </form> 
+</section>
 <% include ../partials/footer %>

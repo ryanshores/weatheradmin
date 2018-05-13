@@ -10,6 +10,7 @@
   "author": "Ryan Shores",
   "license": "ISC",
   "dependencies": {
+    "@mapbox/togeojson": "^0.16.0",
     "aws-sdk": "^2.224.1",
     "dotenv": "^5.0.1",
     "ejs": "^2.5.8",
