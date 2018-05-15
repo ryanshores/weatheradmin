@@ -13,7 +13,7 @@ var stormSchema = new mongoose.Schema({
         }
     ],
     
-    json: {}
+    json: {default: {}}
     
 });
 

@@ -66,4 +66,18 @@
         	<input type='submit' value='Upload!' />
     </form> 
 </section>
+<section>
+    <h4>Map of file</h4>
+    <%if(storm.json){ %>
+        <div id="map" style="height: 500px; width: 100%;"></div>
+    <% } %>
+</section>
+
+
+
+<script type="text/javascript">var json = '<%- JSON.stringify(storm.json)%>'</script>
+<script type="text/javascript">var points = '<%- JSON.stringify(points)%>'</script>
+<script src="/scripts/map.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=<%= process.env.GOOGLEJSKEY %>&callback=initMap"
+    async defer></script>
 <% include ../partials/footer %>

@@ -1,6 +1,7 @@
 var express = require("express"),
     router  = express.Router(),
-    async   = require("async");
+    async   = require("async"),
+    turf    = require("@turf/turf");
     
 var Storms = require("../models/storms");
 var Cards = require("../models/cards");
@@ -80,10 +81,89 @@ router.post("/:id/active", function(req, res){
 });
 // get individual storm
 router.get('/:id', function(req, res){
-    let cards = [];
-    Storms.findById(req.params.id).populate("cards").exec(function( err, foundStorm ){
-        if( err ) { res.send( err.message ); }
-        else { res.render("./storms/storm", { storm: foundStorm, cards: cards }); }
+    async.waterfall([
+        // get the points
+        function(callback){
+            var locations = [
+        		{
+        			geometry: [-90, 25]
+        		},
+        		{
+        			geometry: [-90.5, 25]
+        		},
+        		{
+        			geometry: [-91, 25]
+        		},
+        		{
+        			geometry: [-90, 28]
+        		},
+        		{
+        			geometry: [-90.5, 28]
+        		},
+        		{
+        			geometry: [-91, 28]
+        		}
+        	];
+        	callback(null, locations);
+        },
+        // Get the storm
+        function(points, callback){
+            Storms.findById(req.params.id).populate("cards").exec(function( err, storm ){
+                if( err ){ callback(err); }
+                else { callback(null, points, storm); }
+            });
+        },
+        // make polygons
+        function(points, storm, callback){
+            var level1;
+            var level2;
+            var result = false;
+            if(storm.json){
+                var jsonObj = storm.json.toObject();
+                if(jsonObj.features){
+                    jsonObj.features.forEach(function(feat){
+                        if(feat.properties.name == "hf50"){
+                            level1 = turf.polygon(feat.geometry.coordinates);
+                        } else if(feat.properties.name == "hf64"){
+                            level2 = turf.polygon(feat.geometry.coordinates);
+                        }
+                    });
+                }
+            }
+            if(level1 != undefined && level2 != undefined){
+                result = true;
+            }
+            callback(null, points, storm, level1, level2, result);
+        },
+        // color code points
+        function(points, storm, level1, level2, result, callback){
+            if(result){
+                points.forEach(function(pt){
+                    pt.properties = {};
+                    if(turf.booleanWithin(turf.point(pt.geometry), level2)){
+                        pt.properties.color = "red";
+                    } else if(turf.booleanWithin(turf.point(pt.geometry), level1)){
+                        pt.properties.color = "orange";
+                    } else {
+                        pt.properties.color = "green";
+                    }
+                });
+                callback(null, points, storm, "Waterfall Finished");    
+            } else {
+                points.forEach(function(pt){
+                    pt.properties = {};
+                    pt.properties.color = "green";
+                });
+                callback(null, points, storm, "Waterfall finished");
+            }
+            
+        }
+        ], 
+    function(err, points, storm, result){
+        if( err ){ res.send(err.message); }
+        else{
+            res.render("./storms/storm", {storm: storm, points: points});
+        }
     });
 });
 
