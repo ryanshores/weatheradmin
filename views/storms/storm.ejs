@@ -3,7 +3,7 @@
     <nav>
         <ul>
             <li><a href="/storms/<%=storm._id%>/add/card">Add Card</a></li>
-            <li><a href="#">Add KML File</a></li>
+            <li><a href="/storms/<%=storm._id%>/add/cones">Add KML File</a></li>
         </ul>
     </nav>    
 </header>
@@ -56,27 +56,19 @@
     	<% }); %>
     </table>
 </section>
-<section>
-    <h1>Upload a file</h1>
-    <form id='uploadForm' 
-    	action='/storms/<%=storm._id%>/upload' 
-    	method='post' 
-    	encType="multipart/form-data">
-        	<input type="file" name="sampleFile" />
-        	<input type='submit' value='Upload!' />
-    </form> 
-</section>
-<section>
-    <h4>Map of file</h4>
-    <%if(storm.json){ %>
-        <div id="map" style="height: 500px; width: 100%;"></div>
-    <% } %>
-</section>
+<% if( storm.json.type == "FeatureCollection" ) { %>
+    <section>
+        <h4>Map of file</h4>
+        <a class="btn deleteBtn" href="/storms/<%=storm._id%>/delete/cones" onClick="return confirm('Are you absolutely sure you want to remove the cone files?')">Remove Cones</a>
+        <%if(storm.json){ %>
+            <div id="map" style="height: 500px; width: 100%;"></div>
+        <% } %>
+    </section>
+<% } %>
 
 
 
 <script type="text/javascript">var json = '<%- JSON.stringify(storm.json)%>'</script>
-<script type="text/javascript">var points = '<%- JSON.stringify(points)%>'</script>
 <script src="/scripts/map.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=<%= process.env.GOOGLEJSKEY %>&callback=initMap"
     async defer></script>

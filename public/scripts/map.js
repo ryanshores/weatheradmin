@@ -1,8 +1,18 @@
-/* global google, json, points */
+/* global google, json */
 
 var map;
 let parsedJSON = JSON.parse(json);
-let parsedPoints = JSON.parse(points);
+let parsedPoints = [
+        		{
+        			geometry: [-90, 25]
+        		},
+        		{
+        			geometry: [-90.5, 25]
+        		},
+        		{
+        			geometry: [-91, 25]
+        		}
+        	];
 
 function initMap() {
 map = new google.maps.Map(document.getElementById('map'), {
@@ -14,7 +24,7 @@ addFeatures();
 
 function addFeatures(){
 	addJSON();
-	addPoints();
+	// addPoints();
 }
 
 function addJSON() {

@@ -1,0 +1,15 @@
+<% include ../partials/header %>
+
+<section>
+    <h1>Upload a file</h1>
+    <div>Adding a new file overwrites the old file.</div>
+    <form id='uploadForm' 
+    	action='/storms/<%=stormid%>/upload' 
+    	method='post' 
+    	encType="multipart/form-data">
+        	<input type="file" name="sampleFile" />
+        	<input type='submit' value='Upload!' />
+    </form> 
+</section>
+
+<% include ../partials/footer %>

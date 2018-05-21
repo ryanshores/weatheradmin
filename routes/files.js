@@ -1,39 +1,8 @@
-const express   = require("express"),
-    router      = express.Router(),
-    fs			= require("fs"),
+const fs			= require("fs"),
     toGeoJSON	= require("@mapbox/togeojson"),
     DOMParser	= require('xmldom').DOMParser,
     async		= require("async");
 
-const fileUpload = require("express-fileupload");
-router.use(fileUpload());
-
-// router.get("/upload", function(req, res){
-// 	res.render("./upload");
-// });
-
-// router.post("/upload", function(req, res){
-// 	if (!req.files) {
-// 		return res.status(400).send('No files were uploaded.');
-// 	}
-	
-// 	// The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
-// 	let sampleFile = req.files.sampleFile;
-// 	let path = "./uploads/" + sampleFile.name;
-	
-// 	saveFile(sampleFile, sampleFile.name, path, ".kml", function(err, result){
-// 		if(err){
-// 			console.log("Error: " + err);
-			
-// 		}
-// 		else{
-// 			console.log("Success: ");
-// 			console.log(result);
-			
-// 		}
-// 	});
-	
-// });
 
 function KMLtoJSON(routeToFile, cb){
 	var kml = new DOMParser().parseFromString(fs.readFileSync(routeToFile, 'utf8'));
@@ -81,13 +50,13 @@ function saveFile(file, name, path, format, callback){
 				} else {
 					// function removed original file after converting
 					// function returns a json string
-					callback(null, file);
+					callback(null, file, "Success");
 				}
 			});
 		}
 	],
-	function(err, result){
-		callback(err, result);
+	function(err, file, result){
+		callback(err, file, result);
 	});
 }
 

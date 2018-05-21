@@ -13,8 +13,8 @@ var stormSchema = new mongoose.Schema({
         }
     ],
     
-    json: {default: {}}
+    json: { type: mongoose.Schema.Types.Mixed, default: {} }
     
-});
+}, { minimize: false });
 
 module.exports = mongoose.model('Storm', stormSchema);

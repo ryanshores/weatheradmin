@@ -30,6 +30,7 @@ router.post('/add', function(req, res){
     var newStorm = {
         name: req.body.name,
         category: req.body.category,
+        json: {},
         isActive: false,
     };
     Storms.create(newStorm, function( err, newStorm ){
@@ -82,87 +83,18 @@ router.post("/:id/active", function(req, res){
 // get individual storm
 router.get('/:id', function(req, res){
     async.waterfall([
-        // get the points
-        function(callback){
-            var locations = [
-        		{
-        			geometry: [-90, 25]
-        		},
-        		{
-        			geometry: [-90.5, 25]
-        		},
-        		{
-        			geometry: [-91, 25]
-        		},
-        		{
-        			geometry: [-90, 28]
-        		},
-        		{
-        			geometry: [-90.5, 28]
-        		},
-        		{
-        			geometry: [-91, 28]
-        		}
-        	];
-        	callback(null, locations);
-        },
         // Get the storm
-        function(points, callback){
+        function(callback){
             Storms.findById(req.params.id).populate("cards").exec(function( err, storm ){
                 if( err ){ callback(err); }
-                else { callback(null, points, storm); }
+                else { callback(null, storm, "Finished"); }
             });
-        },
-        // make polygons
-        function(points, storm, callback){
-            var level1;
-            var level2;
-            var result = false;
-            if(storm.json){
-                var jsonObj = storm.json.toObject();
-                if(jsonObj.features){
-                    jsonObj.features.forEach(function(feat){
-                        if(feat.properties.name == "hf50"){
-                            level1 = turf.polygon(feat.geometry.coordinates);
-                        } else if(feat.properties.name == "hf64"){
-                            level2 = turf.polygon(feat.geometry.coordinates);
-                        }
-                    });
-                }
-            }
-            if(level1 != undefined && level2 != undefined){
-                result = true;
-            }
-            callback(null, points, storm, level1, level2, result);
-        },
-        // color code points
-        function(points, storm, level1, level2, result, callback){
-            if(result){
-                points.forEach(function(pt){
-                    pt.properties = {};
-                    if(turf.booleanWithin(turf.point(pt.geometry), level2)){
-                        pt.properties.color = "red";
-                    } else if(turf.booleanWithin(turf.point(pt.geometry), level1)){
-                        pt.properties.color = "orange";
-                    } else {
-                        pt.properties.color = "green";
-                    }
-                });
-                callback(null, points, storm, "Waterfall Finished");    
-            } else {
-                points.forEach(function(pt){
-                    pt.properties = {};
-                    pt.properties.color = "green";
-                });
-                callback(null, points, storm, "Waterfall finished");
-            }
-            
         }
         ], 
-    function(err, points, storm, result){
+    function(err, storm, result){
         if( err ){ res.send(err.message); }
         else{
-            res.render("./storms/storm", {storm: storm, points: points});
+            res.render("./storms/storm", {storm: storm});
         }
     });
 });
@@ -243,7 +175,11 @@ router.get("/:stormid/:cardid/delete", function(req, res) {
    });
 });
 
-// Storm wind Predictions
+// Storm Cones
+// add
+router.get("/:stormid/add/cones", function(req, res){
+    res.render("./storms/addcones", {stormid: req.params.stormid}); 
+});
 router.post("/:stormid/upload", function(req, res){
 	if (!req.files) {
 		return res.status(400).send('No files were uploaded.');
@@ -256,16 +192,17 @@ router.post("/:stormid/upload", function(req, res){
 	async.waterfall([
 	   // Convert KML to JSON String
 	    function(callback){
-	        saveFile(sampleFile, sampleFile.name, path, ".kml", function(err, result) {
+	        saveFile(sampleFile, sampleFile.name, path, ".kml", function(err, file, result) {
 	            if(err){
 	               // The file was wrong, or failed to be converted
 	               callback(err);
 	            } else {
 	               // Successful file upload and convert
-	               callback(null, result);
+	               callback(null, file);
 	            }
 	        });
 	    }, function(GeoJSON, callback){
+	        console.log(GeoJSON);
 	       // Save JSON to database
 	       Storms.findById(req.params.stormid, function(err, storm) {
 	           if(err){
@@ -279,6 +216,7 @@ router.post("/:stormid/upload", function(req, res){
 	                       callback(err);
 	                   }
 	               });
+	               console.log("Storm.json: " + storm.json);
 	               callback(null, "Saved to Database");
 	           }
 	       });
@@ -291,6 +229,17 @@ router.post("/:stormid/upload", function(req, res){
 	        }
 	    }
 	);
+});
+// delete
+router.get("/:stormid/delete/cones", function(req, res){
+    Storms.findById(req.params.stormid, function(err, storm) {
+        if(err){
+            res.send(err);
+        } else {
+            storm.json = {};
+            res.redirect("/storms/" + req.params.stormid);
+        }
+    });
 });
 
 
