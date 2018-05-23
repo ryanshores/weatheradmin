@@ -8,7 +8,7 @@
     </nav>    
 </header>
 <section>
-    <h1><%= storm.name %> <%= storm.category %> <a href="/storms/edit/<%=storm._id%>">Edit</a> <a href="/storms/<%=storm._id%>/delete">Delete</a></h1>
+    <h1><%= storm.name %> <%= storm.category %> <a href="/storms/edit/<%=storm._id%>">Edit</a> <a href="/storms/<%=storm._id%>/delete" onClick="return confirm('Are you absolutely sure you want to delete the storm?')">Delete</a></h1>
     <form action='/storms/<%=storm._id%>/active' method='POST'>
         <label>Active storm: </label>
         <select name="isActive">
@@ -51,7 +51,7 @@
                         <button class="btn updateBtn" value="submit">Submit</button>
     			    </form>
     			</td>
-    			<td><a class="btn deleteBtn" href="/storms/<%=storm._id%>/<%=card._id%>/delete">Delete</a></td>
+    			<td><a class="btn deleteBtn" href="/storms/<%=storm._id%>/<%=card._id%>/delete" onClick="return confirm('Are you absolutely sure you want to remove the card?')">Delete</a></td>
     		</tr>
     	<% }); %>
     </table>

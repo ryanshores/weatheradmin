@@ -237,6 +237,7 @@ router.get("/:stormid/delete/cones", function(req, res){
             res.send(err);
         } else {
             storm.json = {};
+            storm.save();
             res.redirect("/storms/" + req.params.stormid);
         }
     });
